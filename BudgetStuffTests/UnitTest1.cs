@@ -8,7 +8,7 @@ namespace BudgetStuffTests
     [TestClass]
     public class UnitTest1
     {
-        private IRepository<Dictionary<string, int>> repo = Substitute.For<IRepository<Dictionary<string, int>>>();
+        private IRepository<List<Budget>> repo = Substitute.For<IRepository<List<Budget>>>();
         private BudgetSys budgetSys;
 
         [TestInitializeAttribute]
@@ -19,10 +19,14 @@ namespace BudgetStuffTests
         [TestMethod]
         public void OneMontbNoBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201701", 0 }
+                new Budget() {Year =  2017, Month = 1, Amount = 0}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201701", 0 }
+            //};
 
             intiBudget(budget);
             TotalAmountShouldBe(0, new DateTime(2017, 1, 1), new DateTime(2017, 1, 31));
@@ -31,10 +35,14 @@ namespace BudgetStuffTests
         [TestMethod]
         public void OneMonthWithBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201701", 3100 }
+                new Budget() {Year =  2017, Month = 1, Amount = 3100}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201701", 3100 }
+            //};
 
             intiBudget(budget);
             TotalAmountShouldBe(3100, new DateTime(2017, 1, 1), new DateTime(2017, 1, 31));
@@ -43,10 +51,14 @@ namespace BudgetStuffTests
         [TestMethod]
         public void HalfMonthWithBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201701", 3100 }
+                new Budget() {Year =  2017, Month = 1, Amount = 3100}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201701", 3100 }
+            //};
 
             intiBudget(budget);
             TotalAmountShouldBe(1100, new DateTime(2017, 1, 10), new DateTime(2017, 1, 20));
@@ -55,20 +67,28 @@ namespace BudgetStuffTests
         [TestMethod]
         public void TwoMonths_Empty_NoEmptyBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201703", 3100 }
+                new Budget() {Year =  2017, Month = 3, Amount = 3100}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201703", 3100 }
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(3100, new DateTime(2017, 2, 21), new DateTime(2017, 3, 31));
         }
         [TestMethod]
         public void TwoMonths_NoEmpty_EmptyBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201702", 2800 }
+                new Budget() {Year =  2017, Month = 2, Amount = 2800}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201702", 2800 }
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(800, new DateTime(2017, 2, 21), new DateTime(2017, 3, 31));
         }
@@ -76,10 +96,14 @@ namespace BudgetStuffTests
         [TestMethod]
         public void ThreeMonths_Empty_NoEmpty_EmptyBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201702", 2800 }
+                new Budget() {Year =  2017, Month = 2, Amount = 2800}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201702", 2800 }
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(2800, new DateTime(2017, 1, 1), new DateTime(2017, 3, 31));
         }
@@ -87,10 +111,15 @@ namespace BudgetStuffTests
         [TestMethod]
         public void ThreeWholeMonths_NoEmpty_Empty_NoEmptyBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201702", 2800 },{"201704",300}
+                new Budget() {Year =  2017, Month = 2, Amount = 2800},
+                new Budget() {Year =  2017, Month = 4 ,Amount = 300}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201702", 2800 },{"201704",300}
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(3100, new DateTime(2017, 2, 1), new DateTime(2017, 4, 30));
         }
@@ -98,10 +127,15 @@ namespace BudgetStuffTests
         [TestMethod]
         public void ThreeHalfMonths_NoEmpty_Empty_NoEmptyBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201702", 2800 },{"201704",300}
+                new Budget() {Year =  2017, Month = 2, Amount = 2800},
+                new Budget() {Year =  2017, Month = 4 ,Amount = 300}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201702", 2800 },{"201704",300}
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(250, new DateTime(2017, 2, 28), new DateTime(2017, 4, 15));
         }
@@ -109,10 +143,15 @@ namespace BudgetStuffTests
         [TestMethod]
         public void FourHalfMonths_NoEmpty_Empty_NoEmpty_EmptyBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201702", 2800 },{"201704",300}
+                new Budget() {Year =  2017, Month = 2, Amount = 2800},
+                new Budget() {Year =  2017, Month = 4, Amount = 300}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201702", 2800 },{"201704",300}
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(400, new DateTime(2017, 2, 28), new DateTime(2017, 5, 15));
         }
@@ -134,10 +173,16 @@ namespace BudgetStuffTests
         [TestMethod]
         public void CrossYearBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201612", 3100 },{"201701",310},{"201702",28}
+                new Budget() {Year =  2016, Month = 12, Amount = 3100},
+                new Budget() {Year =  2017, Month = 1, Amount = 310},
+                new Budget() {Year =  2017, Month = 2, Amount = 28}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201612", 3100 },{"201701",310},{"201702",28}
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(3438, new DateTime(2016, 12, 1), new DateTime(2017, 2, 28));
         }
@@ -145,10 +190,14 @@ namespace BudgetStuffTests
         [TestMethod]
         public void OnlyOneDayBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201701", 3100 }
+                new Budget() {Year =  2017, Month = 1, Amount = 3100}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201701", 3100 }
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(100, new DateTime(2017, 1, 1), new DateTime(2017,1, 1));
         }
@@ -157,10 +206,14 @@ namespace BudgetStuffTests
         [TestMethod]
         public void NotInMonthBeforeBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201704", 3100 }
+                new Budget() {Year =  2017, Month = 4, Amount = 3100}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201704", 3100 }
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(0, new DateTime(2017, 3, 1), new DateTime(2017, 3, 31));
         }
@@ -168,10 +221,14 @@ namespace BudgetStuffTests
         [TestMethod]
         public void NotInMonthAfterBudget()
         {
-            Dictionary<string, int> budget = new Dictionary<string, int>
+            List<Budget> budget = new List<Budget>()
             {
-                { "201704", 3100 }
+                new Budget() {Year =  2017, Month = 4, Amount = 3100}
             };
+            //Dictionary<string, int> budget = new Dictionary<string, int>
+            //{
+            //    { "201704", 3100 }
+            //};
             intiBudget(budget);
             TotalAmountShouldBe(0, new DateTime(2017, 5, 1), new DateTime(2017, 5, 31));
         }
@@ -181,7 +238,7 @@ namespace BudgetStuffTests
             Assert.AreEqual(expected, budgetSys.TotalAmount(start, end));
         }
 
-        private void intiBudget(Dictionary<string, int> budgets)
+        private void intiBudget(List<Budget> budgets)
         {
             repo.GetBudgets().Returns(budgets);
         }

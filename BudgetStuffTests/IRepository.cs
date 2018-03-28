@@ -8,6 +8,6 @@ namespace BudgetStuffTests
 {
     public interface IRepository<T>
     {
-        Dictionary<string, int> GetBudgets();
+        List<Budget> GetBudgets();
     }
 }
