@@ -13,6 +13,7 @@ namespace BudgetStuffTests
     public class BudgetSys
     {
         private readonly IRepository<List<Budget>> _repo;
+        private List<Budget> _budget;
 
         public BudgetSys(IRepository<List<Budget>> repo)
         {
@@ -21,19 +22,23 @@ namespace BudgetStuffTests
 
         public decimal TotalAmount(DateTime start, DateTime end)
         {
-            var budget = this._repo.GetBudgets();
+            _budget = this._repo.GetBudgets();
             if (start > end)
             {
                 throw new Exception("Start Date must before End Date");
             }
 
-            return CalculateAmount(start, end, budget);
+            return CalculateAmount(start, end);
 
         }
 
-        private static decimal GetFullMonthBudget(DateTime start, DateTime end, List<Budget> budgets)
+        private Budget GetBudget(DateTime month)
         {
-            var budget = budgets.Where((c => c.Year == start.Year && c.Month == start.Month)).FirstOrDefault();
+            return _budget.Where((c => c.Year == month.Year && c.Month == month.Month)).FirstOrDefault();
+        }
+
+        private decimal GetFullMonthBudget(DateTime start, DateTime end, Budget budget)
+        {
             if (budget != null)
             {
                 return (decimal)(budget.Amount / DateTime.DaysInMonth(start.Year, start.Month) *
@@ -42,9 +47,8 @@ namespace BudgetStuffTests
             return 0;
         }
 
-        private static decimal GetFirstMonthBudget(DateTime start, List<Budget> budgets)
+        private decimal GetFirstMonthBudget(DateTime start, Budget budget)
         {
-            var budget = budgets.Where((c => c.Year == start.Year && c.Month == start.Month)).FirstOrDefault();
             if (budget != null)
             {
                 return (decimal)(budget.Amount / DateTime.DaysInMonth(start.Year, start.Month) *
@@ -56,9 +60,8 @@ namespace BudgetStuffTests
             return 0;
         }
 
-        private static decimal GetLastMonthBudget(DateTime end, List<Budget> budgets)
+        private decimal GetLastMonthBudget(DateTime end, Budget budget)
         {
-            var budget = budgets.Where((c => c.Year == end.Year && c.Month == end.Month)).FirstOrDefault();
             if (budget != null)
             {
                 return (decimal)(budget.Amount / DateTime.DaysInMonth(end.Year, end.Month) *
@@ -68,25 +71,25 @@ namespace BudgetStuffTests
             return 0;
         }
 
-        private static string GetMonthKey(DateTime date)
+        private string GetMonthKey(DateTime date)
         {
             return date.Year.ToString() + date.Month.ToString().PadLeft(2, '0');
         }
 
 
-        public static int TotalMonths(DateTime start, DateTime end)
+        public int TotalMonths(DateTime start, DateTime end)
         {
             return Math.Abs((start.Year * 12 + start.Month) - (end.Year * 12 + end.Month));
         }
 
 
-        private static decimal GetMiddleMonthBudget(DateTime start, DateTime end, List<Budget> budgets)
+        private decimal GetMiddleMonthBudget(DateTime start, DateTime end)
         {
             decimal totalBudget = 0;
             for (int i = 1; i < TotalMonths(start, end); i++)
             {
                 DateTime calMonth = start.AddMonths(i);
-                var budget = budgets.Where((c => c.Year == calMonth.Year && c.Month == calMonth.Month)).FirstOrDefault();
+                var budget = GetBudget(calMonth);
                 if (budget != null)
                 {
                     totalBudget += budget.Amount;
@@ -96,18 +99,18 @@ namespace BudgetStuffTests
             return totalBudget;
         }
 
-        private static decimal CalculateAmount(DateTime start, DateTime end, List<Budget> budget)
+        private decimal CalculateAmount(DateTime start, DateTime end)
         {
 
             if (start.Year == end.Year && start.Month == end.Month)
             {
-                return GetFullMonthBudget(start, end, budget);
+                return GetFullMonthBudget(start, end, GetBudget(start));
             }
 
             decimal totalBudget = 0;
-            totalBudget += GetFirstMonthBudget(start, budget);
-            totalBudget += GetMiddleMonthBudget(start, end, budget);
-            totalBudget += GetLastMonthBudget(end, budget);
+            totalBudget += GetFirstMonthBudget(start, GetBudget(start));
+            totalBudget += GetMiddleMonthBudget(start, end);
+            totalBudget += GetLastMonthBudget(end, GetBudget(end));
 
             return totalBudget;
         }
