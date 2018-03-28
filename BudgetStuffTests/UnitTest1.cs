@@ -153,6 +153,29 @@ namespace BudgetStuffTests
             TotalAmountShouldBe(100, new DateTime(2017, 1, 1), new DateTime(2017,1, 1));
         }
 
+
+        [TestMethod]
+        public void NotInMonthBeforeBudget()
+        {
+            Dictionary<string, int> budget = new Dictionary<string, int>
+            {
+                { "201704", 3100 }
+            };
+            intiBudget(budget);
+            TotalAmountShouldBe(0, new DateTime(2017, 3, 1), new DateTime(2017, 3, 31));
+        }
+
+        [TestMethod]
+        public void NotInMonthAfterBudget()
+        {
+            Dictionary<string, int> budget = new Dictionary<string, int>
+            {
+                { "201704", 3100 }
+            };
+            intiBudget(budget);
+            TotalAmountShouldBe(0, new DateTime(2017, 5, 1), new DateTime(2017, 5, 31));
+        }
+
         private void TotalAmountShouldBe(int expected, DateTime start, DateTime end)
         {
             Assert.AreEqual(expected, budgetSys.TotalAmount(start, end));
